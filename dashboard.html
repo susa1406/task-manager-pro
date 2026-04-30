@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1>🚀 Task Manager</h1>
+
+  <button onclick="logout()">Logout</button>
+
+  <div class="task-form">
+    <input type="text" id="taskInput" placeholder="Enter task..." />
+    <button onclick="addTask()">Add</button>
+  </div>
+
+  <div class="filters">
+    <button onclick="loadTasks()">All</button>
+    <button onclick="filterTasks(false)">Pending</button>
+    <button onclick="filterTasks(true)">Completed</button>
+  </div>
+
+  <ul id="taskList"></ul>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+// 🔐 CHECK LOGIN
+(async () => {
+  const { data: { session } } = await client.auth.getSession();
+
+  if (!session) {
+    window.location.href = "login.html";
+  }
+})();
+</script>
+
+</body>
+</html>

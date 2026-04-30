@@ -3,6 +3,7 @@ const SUPABASE_URL = "https://blydoffpyipdehzghmvo.supabase.co";
 const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN";
 
 // ✅ SUPABASE CLIENT
+// 🔥 SUPABASE CONFIG
 const { createClient } = window.supabase;
 const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -12,8 +13,23 @@ const taskList = document.getElementById("taskList");
 
 // 🧠 GET CURRENT USER
 async function getUser() {
-  const { data } = await client.auth.getUser();
+  const { data, error } = await client.auth.getUser();
+
+  if (error) {
+    console.error("Auth Error:", error);
+    return null;
+  }
+
   return data.user;
+}
+
+// 🔐 PROTECT PAGE (IMPORTANT FIX)
+async function protectPage() {
+  const user = await getUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+  }
 }
 
 // 📥 LOAD TASKS (USER BASED)
@@ -87,15 +103,16 @@ function renderTasks(tasks) {
   });
 }
 
-// ➕ ADD TASK
+// ➕ ADD TASK (FIXED - no alert now)
 async function addTask() {
   const title = taskInput.value.trim();
   if (!title) return;
 
   const user = await getUser();
+
   if (!user) {
-    alert("Please login first");
-    return;
+    console.warn("User not logged in");
+    return; // ❌ removed annoying alert
   }
 
   const { error } = await client.from("tasks").insert([
@@ -106,7 +123,10 @@ async function addTask() {
     }
   ]);
 
-  if (error) console.error("Insert Error:", error);
+  if (error) {
+    console.error("Insert Error:", error);
+    return;
+  }
 
   taskInput.value = "";
 }
@@ -131,21 +151,27 @@ async function deleteTask(id) {
   if (error) console.error("Delete Error:", error);
 }
 
-// ⚡ REALTIME (NO DUPLICATE LOAD)
+// 🚪 LOGOUT
+async function logout() {
+  await client.auth.signOut();
+  window.location.href = "login.html";
+}
+
+// ⚡ REALTIME (AUTO REFRESH)
 client
   .channel("tasks-realtime")
   .on(
     "postgres_changes",
     { event: "*", schema: "public", table: "tasks" },
-    payload => {
-      console.log("Realtime update:", payload);
-      loadTasks();
-    }
+    () => loadTasks()
   )
   .subscribe();
 
-// 🚀 INIT
-loadTasks();
+// 🚀 INIT (IMPORTANT ORDER)
+(async () => {
+  await protectPage(); // 🔐 check login first
+  await loadTasks();   // then load data
+})();
 
 // 🌍 GLOBAL FUNCTIONS
 window.addTask = addTask;
@@ -153,3 +179,4 @@ window.deleteTask = deleteTask;
 window.toggleTask = toggleTask;
 window.filterTasks = filterTasks;
 window.loadTasks = loadTasks;
+window.logout = logout;

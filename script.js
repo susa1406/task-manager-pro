@@ -4,15 +4,42 @@ const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN";
 
 // ✅ SUPABASE CLIENT
 // 🔥 SUPABASE CONFIG
+let currentUser = null;
+let channel = null;
 const { createClient } = window.supabase;
 const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+client.auth.onAuthStateChange((event) => {
+  if (event === "SIGNED_OUT") {
+    currentUser = null;
+    window.location.href = "login.html";
+  }
+});
 
 // DOM
 const taskInput = document.getElementById("taskInput");
 const taskList = document.getElementById("taskList");
 
+// 👤 LOAD USER PROFILE
+async function loadUserProfile() {
+  const { data: { user } } = await client.auth.getUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("userName").innerText =
+    user.user_metadata.full_name || user.email;
+
+  document.getElementById("userAvatar").src =
+    user.user_metadata.avatar_url || "https://via.placeholder.com/40";
+}
+
 // 🧠 GET CURRENT USER
 async function getUser() {
+  if (currentUser) return currentUser;
+
   const { data, error } = await client.auth.getUser();
 
   if (error) {
@@ -20,7 +47,8 @@ async function getUser() {
     return null;
   }
 
-  return data.user;
+  currentUser = data.user;
+  return currentUser;
 }
 
 // 🔐 PROTECT PAGE (IMPORTANT FIX)
@@ -128,7 +156,8 @@ async function addTask() {
     return;
   }
 
-  taskInput.value = "";
+ taskInput.value = "";
+ loadTasks(); // 🔥 instant update
 }
 
 // 🔄 TOGGLE TASK
@@ -139,6 +168,8 @@ async function toggleTask(id, currentStatus) {
     .eq("id", id);
 
   if (error) console.error("Update Error:", error);
+
+  loadTasks(); // 🔥 instant UI update
 }
 
 // ❌ DELETE TASK
@@ -149,29 +180,48 @@ async function deleteTask(id) {
     .eq("id", id);
 
   if (error) console.error("Delete Error:", error);
+  loadTasks();
 }
 
-// 🚪 LOGOUT
 async function logout() {
+  currentUser = null;
   await client.auth.signOut();
   window.location.href = "login.html";
 }
 
 // ⚡ REALTIME (AUTO REFRESH)
-client
-  .channel("tasks-realtime")
-  .on(
-    "postgres_changes",
-    { event: "*", schema: "public", table: "tasks" },
-    () => loadTasks()
-  )
-  .subscribe();
 
-// 🚀 INIT (IMPORTANT ORDER)
 (async () => {
-  await protectPage(); // 🔐 check login first
-  await loadTasks();   // then load data
+  await protectPage();
+  await loadUserProfile();
+  await loadTasks();
+
+  // 🔥 ADD HERE (RIGHT AFTER loadTasks)
+  const user = await getUser();
+
+  if (channel) {
+    client.removeChannel(channel);
+  }
+
+  channel = client
+    .channel("tasks-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "tasks",
+        filter: `user_id=eq.${user.id}`
+      },
+      (payload) => {
+        console.log("Realtime change:", payload);
+        loadTasks();
+      }
+    )
+    .subscribe();
+
 })();
+
 
 // 🌍 GLOBAL FUNCTIONS
 window.addTask = addTask;

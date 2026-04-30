@@ -12,7 +12,11 @@
 
   <div class="container">
     <h1>🚀 Task Manager Pro</h1>
-
+<div class="user-bar">
+  <img id="userAvatar" />
+  <span id="userName"></span>
+  <button onclick="logout()" class="logout-btn">Logout</button>
+</div>
     <div class="task-form">
       <input type="text" id="taskInput" placeholder="Enter task..." />
       <button onclick="addTask()">Add</button>
@@ -28,5 +32,18 @@
   </div>
 
  <script src="script.js" defer></script>
+ <script>
+const SUPABASE_URL = "https://blydoffpyipdehzghmvo.supabase.co";
+const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN";
+
+const { createClient } = supabase;
+const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+client.auth.getSession().then(({ data }) => {
+  if (!data.session) {
+    window.location.href = "login.html";
+  }
+});
+</script>
 </body>
 </html>

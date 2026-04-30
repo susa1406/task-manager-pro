@@ -1,58 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Login</title>
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      background:#0f172a;
-      color:white;
-      font-family:sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
     }
+
+    .card {
+      text-align: center;
+      padding: 30px;
+      background: #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
     button {
-      padding:12px 20px;
-      background:#22c55e;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #22c55e;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #16a34a;
     }
   </style>
 </head>
+
 <body>
 
-  <div>
+  <div class="card">
     <h1>🔐 Login</h1>
+    <p>Sign in to manage your tasks</p>
     <button onclick="login()">Login with Google</button>
   </div>
 
 <script>
 const SUPABASE_URL = "https://blydoffpyipdehzghmvo.supabase.co";
-const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN"; // ⚠️ paste your key here
 
 const { createClient } = window.supabase;
 const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// LOGIN
+// ✅ LOGIN FUNCTION
 async function login() {
   await client.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: window.location.origin + "/dashboard.html"
+      // IMPORTANT: must match Supabase redirect settings
+      redirectTo: window.location.origin + "/index.html"
     }
   });
 }
 
-// AUTO REDIRECT IF ALREADY LOGGED IN
-(async () => {
+// ✅ AUTO REDIRECT IF ALREADY LOGGED IN
+async function checkUser() {
   const { data: { session } } = await client.auth.getSession();
+
   if (session) {
-    window.location.href = "dashboard.html";
+    window.location.href = "index.html";
   }
-})();
+}
+
+checkUser();
 </script>
 
 </body>

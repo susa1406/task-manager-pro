@@ -4,7 +4,8 @@ body {
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin:0px;
+
 }
 
 .container {
@@ -28,6 +29,7 @@ h1 {
 .task-form {
   display: flex;
   gap: 10px;
+  column-wrap: auto;
 }
 
 input {

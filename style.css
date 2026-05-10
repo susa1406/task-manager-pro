@@ -1,106 +1,227 @@
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #0f172a;
   color: white;
   display: flex;
   justify-content: center;
-  margin:0px;
-
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
+/* 🔥 MAIN CONTAINER */
 .container {
-  /* width: 800px; */
+  width: 100%;
+  max-width: 1200px;
+  min-width: 300px;
+
   background: #1e293b;
-  /* padding: 20px; */
-  border-radius: 10px;
-
-
-    /* width: 80%;          */
-  width: 1200px;
-  min-width: 300px;    /* Limits width on larger screens */
-  margin:0 auto;       /* Centers the container horizontally */
-  padding: 20px;  
+  border-radius: 12px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
+/* 🔥 HEADER */
 h1 {
   text-align: center;
+  margin-bottom: 20px;
 }
 
+/* 🔥 USER BAR */
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.user-bar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.logout-btn {
+  background: red;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* 🔥 TASK FORM */
 .task-form {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap ;
+  margin-bottom: 15px;
 }
 
-input {
+/* 🔥 INPUTS */
+input,
+#dueDate {
   flex: 1;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 6px;
   border: none;
+  outline: none;
+  font-size: 15px;
 }
 
+/* 🔥 BUTTONS */
 button {
-  padding: 10px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   background: #22c55e;
   color: white;
+  transition: 0.2s;
 }
 
+button:hover {
+  opacity: 0.9;
+}
+
+/* 🔥 FILTERS */
 .filters {
-  margin-top: 10px;
   display: flex;
   gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
+/* 🔥 TASK LIST */
+#taskList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 🔥 TASK ITEM */
 li {
   background: #334155;
   margin-top: 10px;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 14px;
+  border-radius: 8px;
+
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 🔥 TASK CONTENT */
+.task-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  word-break: break-word;
 }
 
 .completed {
   text-decoration: line-through;
   opacity: 0.6;
 }
-.user-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
 
-.user-bar img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-}
-
-.logout-btn {
-  background: red;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-#dueDate {
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-}
-
-.task-content {
-  display: flex;
-  flex-direction: column;
-}
-
+/* 🔥 DUE DATE */
 .due-date {
   color: #facc15;
   font-size: 12px;
-  margin-top: 4px;
+}
+
+/* ================================================= */
+/* 📱 MOBILE RESPONSIVE */
+/* ================================================= */
+
+@media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  /* 🔥 INPUTS STACK VERTICALLY */
+  .task-form {
+    flex-direction: column;
+  }
+
+  .task-form input,
+  .task-form button,
+  #dueDate {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* 🔥 FILTER BUTTONS FULL WIDTH */
+  .filters {
+    flex-direction: column;
+  }
+
+  .filters button {
+    width: 100%;
+  }
+
+  /* 🔥 USER BAR STACK */
+  .user-bar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* 🔥 TASK ITEMS STACK */
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  li div {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+
+  li div button {
+    flex: 1;
+  }
+
+}
+
+/* ================================================= */
+/* 📲 TABLET RESPONSIVE */
+/* ================================================= */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .container {
+    width: 95%;
+  }
+
+  .task-form {
+    flex-wrap: wrap;
+  }
+
+  .task-form input,
+  #dueDate {
+    flex: 1 1 45%;
+  }
+
+}
+
+/* ================================================= */
+/* 💻 LARGE PC */
+/* ================================================= */
+
+@media (min-width: 1400px) {
+
+  .container {
+    max-width: 1400px;
+  }
+
 }

@@ -21,7 +21,9 @@ const taskList = document.getElementById("taskList");
 
 // 👤 LOAD USER PROFILE
 async function loadUserProfile() {
-  const { data: { user } } = await client.auth.getUser();
+  const {
+    data: { user },
+  } = await client.auth.getUser();
 
   if (!user) {
     window.location.href = "login.html";
@@ -76,6 +78,7 @@ async function loadTasks() {
   }
 
   renderTasks(data || []);
+  checkReminders(data || []);
 }
 
 // 🎯 FILTER TASKS
@@ -107,13 +110,25 @@ function renderTasks(tasks) {
     return;
   }
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <span style="text-decoration:${task.completed ? "line-through" : "none"}">
-        ${task.title}
-      </span>
+      <div class="task-content">
+
+  <span style="text-decoration:${task.completed ? "line-through" : "none"}">
+    ${task.title}
+  </span>
+
+  ${
+    task.due_date
+      ? `<small class="due-date">
+          ⏰ ${new Date(task.due_date).toLocaleString()}
+        </small>`
+      : ""
+  }
+
+     </div>
 
       <div>
         <button onclick="toggleTask(${task.id}, ${task.completed})">
@@ -130,24 +145,51 @@ function renderTasks(tasks) {
   });
 }
 
-// ➕ ADD TASK (FIXED - no alert now)
+function checkReminders(tasks) {
+  const now = new Date();
+
+  tasks.forEach((task) => {
+    if (!task.due_date || task.completed) return;
+
+    const due = new Date(task.due_date);
+
+    const diff = due - now;
+
+    // reminder within 5 mins
+    if (diff > 0 && diff < 300000) {
+      showNotification(task.title);
+    }
+  });
+}
+
+function showNotification(taskTitle) {
+  if (Notification.permission === "granted") {
+    new Notification("⏰ Task Reminder", {
+      body: taskTitle,
+    });
+  }
+}
+
 async function addTask() {
   const title = taskInput.value.trim();
+  const dueDate = document.getElementById("dueDate").value;
+
   if (!title) return;
 
   const user = await getUser();
 
   if (!user) {
     console.warn("User not logged in");
-    return; // ❌ removed annoying alert
+    return;
   }
 
   const { error } = await client.from("tasks").insert([
     {
       title,
       completed: false,
-      user_id: user.id
-    }
+      user_id: user.id,
+      due_date: dueDate || null,
+    },
   ]);
 
   if (error) {
@@ -155,8 +197,10 @@ async function addTask() {
     return;
   }
 
- taskInput.value = "";
- loadTasks(); // 🔥 instant update
+  taskInput.value = "";
+  document.getElementById("dueDate").value = "";
+
+  loadTasks();
 }
 
 // 🔄 TOGGLE TASK
@@ -173,10 +217,7 @@ async function toggleTask(id, currentStatus) {
 
 // ❌ DELETE TASK
 async function deleteTask(id) {
-  const { error } = await client
-    .from("tasks")
-    .delete()
-    .eq("id", id);
+  const { error } = await client.from("tasks").delete().eq("id", id);
 
   if (error) console.error("Delete Error:", error);
   loadTasks();
@@ -194,6 +235,9 @@ async function logout() {
   await protectPage();
   await loadUserProfile();
   await loadTasks();
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
 
   // 🔥 ADD HERE (RIGHT AFTER loadTasks)
   const user = await getUser();
@@ -210,17 +254,15 @@ async function logout() {
         event: "*",
         schema: "public",
         table: "tasks",
-        filter: `user_id=eq.${user.id}`
+        filter: `user_id=eq.${user.id}`,
       },
       (payload) => {
         console.log("Realtime change:", payload);
         loadTasks();
-      }
+      },
     )
     .subscribe();
-
 })();
-
 
 // 🌍 GLOBAL FUNCTIONS
 window.addTask = addTask;

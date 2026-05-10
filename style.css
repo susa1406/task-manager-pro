@@ -79,3 +79,19 @@ li {
   color: white;
   cursor: pointer;
 }
+#dueDate {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.task-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.due-date {
+  color: #facc15;
+  font-size: 12px;
+  margin-top: 4px;
+}

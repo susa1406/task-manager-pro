@@ -134,7 +134,7 @@ li {
 }
 
 /* ================================================= */
-/* 📱 MOBILE RESPONSIVE */
+/* 📱 MOBILE */
 /* ================================================= */
 
 @media (max-width: 768px) {
@@ -144,12 +144,20 @@ li {
   }
 
   .container {
+    width: 100%;
     padding: 15px;
+    border-radius: 0;
   }
 
-  /* 🔥 INPUTS STACK VERTICALLY */
+  h1 {
+    font-size: 24px;
+  }
+
+  /* 🔥 STACK INPUTS */
   .task-form {
+    display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   .task-form input,
@@ -159,23 +167,25 @@ li {
     box-sizing: border-box;
   }
 
-  /* 🔥 FILTER BUTTONS FULL WIDTH */
+  /* 🔥 FILTERS */
   .filters {
+    display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   .filters button {
     width: 100%;
   }
 
-  /* 🔥 USER BAR STACK */
+  /* 🔥 USER BAR */
   .user-bar {
     flex-direction: column;
-    align-items: center;
+    gap: 10px;
     text-align: center;
   }
 
-  /* 🔥 TASK ITEMS STACK */
+  /* 🔥 TASK ITEMS */
   li {
     flex-direction: column;
     align-items: flex-start;
@@ -194,7 +204,7 @@ li {
 }
 
 /* ================================================= */
-/* 📲 TABLET RESPONSIVE */
+/* 📲 TABLET */
 /* ================================================= */
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -204,7 +214,9 @@ li {
   }
 
   .task-form {
+    display: flex;
     flex-wrap: wrap;
+    gap: 10px;
   }
 
   .task-form input,
@@ -215,13 +227,13 @@ li {
 }
 
 /* ================================================= */
-/* 💻 LARGE PC */
+/* 💻 DESKTOP */
 /* ================================================= */
 
-@media (min-width: 1400px) {
+@media (min-width: 1025px) {
 
   .container {
-    max-width: 1400px;
+    width: 1200px;
   }
 
 }

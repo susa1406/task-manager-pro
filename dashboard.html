@@ -1,43 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Task Manager</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager Pro</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
-<div class="container">
-  <h1>🚀 Task Manager</h1>
+  <div class="container">
 
-  <button onclick="logout()">Logout</button>
+    <!-- HEADER -->
+    <div class="header">
 
-  <div class="task-form">
-    <input type="text" id="taskInput" placeholder="Enter task..." />
-    <button onclick="addTask()">Add</button>
+      <div class="logo-area">
+        <h1>🚀 Task Manager Pro</h1>
+      </div>
+
+      <div class="user-area">
+        <img
+          id="userAvatar"
+          src="https://via.placeholder.com/40"
+          alt="User Avatar"
+          class="avatar"
+        />
+
+        <span id="userName">Loading...</span>
+
+        <button class="logout-btn" onclick="logout()">
+          Logout
+        </button>
+      </div>
+
+    </div>
+
+    <!-- TASK INPUT -->
+    <div class="task-form">
+      <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter task..."
+      />
+
+      <button onclick="addTask()">
+        Add
+      </button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <button onclick="loadTasks()">
+        All
+      </button>
+
+      <button onclick="filterTasks(false)">
+        Pending
+      </button>
+
+      <button onclick="filterTasks(true)">
+        Completed
+      </button>
+    </div>
+
+    <!-- TASK LIST -->
+    <ul id="taskList"></ul>
+
   </div>
 
-  <div class="filters">
-    <button onclick="loadTasks()">All</button>
-    <button onclick="filterTasks(false)">Pending</button>
-    <button onclick="filterTasks(true)">Completed</button>
-  </div>
-
-  <ul id="taskList"></ul>
-</div>
-
-<script src="script.js"></script>
-
-<script>
-// 🔐 CHECK LOGIN
-(async () => {
-  const { data: { session } } = await client.auth.getSession();
-
-  if (!session) {
-    window.location.href = "login.html";
-  }
-})();
-</script>
+  <!-- MAIN SCRIPT -->
+  <script src="script.js"></script>
 
 </body>
 </html>

@@ -15,8 +15,9 @@ body {
 
 
    width: 100%;          /* Expands to full screen width on small devices */
-  max-width: 1200px;    /* Limits width on larger screens */
-  margin: 0 auto;       /* Centers the container horizontally */
+  max-width: 1200px;
+  min-width: 300px;    /* Limits width on larger screens */
+  margin: auto;       /* Centers the container horizontally */
   padding: 20px;  
 }
 

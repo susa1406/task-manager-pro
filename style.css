@@ -745,9 +745,7 @@ li > div button:last-child:hover {
 
   .task-form {
     grid-template-columns: 1fr 200px auto;
-    grid-template-rows: auto;git add .
-git commit -m "fixed duplicate supabase config"
-git push
+    grid-template-rows: auto;
   }
 
   .task-form input[type="text"] {

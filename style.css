@@ -15,8 +15,8 @@ body {
   border-radius: 10px;
 
 
-    width: 80%;         
-  max-width: 1200px;
+    /* width: 80%;          */
+  width: 1200px;
   min-width: 300px;    /* Limits width on larger screens */
   margin:0 auto;       /* Centers the container horizontally */
   padding: 20px;  
@@ -29,7 +29,7 @@ h1 {
 .task-form {
   display: flex;
   gap: 10px;
-  column-wrap: auto;
+  flex-wrap: wrap ;
 }
 
 input {

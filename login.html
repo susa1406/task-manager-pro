@@ -1,84 +1,248 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J.A.R.V.I.S. — Access Control</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500&display=swap');
 
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: #0f172a;
-        color: white;
-        font-family: sans-serif;
-      }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      .card {
-        text-align: center;
-        padding: 30px;
-        background: #1e293b;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      }
+    :root {
+      --arc:    #00d4ff;
+      --arc2:   #ff6b00;
+      --arc-g:  rgba(0,212,255,0.15);
+      --bg:     #020810;
+      --red:    #ff3d3d;
+      --green:  #00ff9f;
+      --txt:    #c8f0ff;
+      --txt2:   #5a9ab5;
+      --muted:  #2a5a70;
+      --border: rgba(0,212,255,0.18);
+      --border2:rgba(0,212,255,0.35);
+    }
 
-      button {
-        margin-top: 15px;
-        padding: 12px 20px;
-        background: #22c55e;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-      }
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
 
-      button:hover {
-        background: #16a34a;
-      }
-    </style>
-  </head>
+      /* HUD grid */
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
 
-  <body>
-    <div class="card">
-      <h1>🔐 Login</h1>
-      <p>Sign in to manage your tasks</p>
-      <button onclick="login()">Login with Google</button>
-    </div>
+    /* Scanning line */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--arc), transparent);
+      animation: scan 6s linear infinite;
+      z-index: 9999;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    @keyframes scan { 0% { top: 0; } 100% { top: 100vh; } }
 
-    <script>
-      const SUPABASE_URL = "https://blydoffpyipdehzghmvo.supabase.co";
-      const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN"; // ⚠️ paste your key here
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(0,12,28,0.92);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: clamp(28px, 6vw, 48px);
+      text-align: center;
+      position: relative;
+      backdrop-filter: blur(12px);
+      animation: fadeUp 0.5s ease both;
+      box-shadow:
+        0 0 60px rgba(0,212,255,0.06),
+        inset 0 0 60px rgba(0,212,255,0.02);
+    }
 
-      const { createClient } = window.supabase;
-      const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+    /* Corner brackets */
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 10px; left: 10px;
+      width: 20px; height: 20px;
+      border-top: 2px solid var(--arc);
+      border-left: 2px solid var(--arc);
+      opacity: 0.6;
+    }
+    .login-card::after {
+      content: '';
+      position: absolute;
+      bottom: 10px; right: 10px;
+      width: 20px; height: 20px;
+      border-bottom: 2px solid var(--arc);
+      border-right: 2px solid var(--arc);
+      opacity: 0.6;
+    }
 
-      // ✅ LOGIN FUNCTION
-      async function login() {
-        await client.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            // IMPORTANT: must match Supabase redirect settings
-            redirectTo: window.location.origin + "/index.html",
-          },
-        });
-      }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-      // ✅ AUTO REDIRECT IF ALREADY LOGGED IN
-      async function checkUser() {
-        const {
-          data: { session },
-        } = await client.auth.getSession();
+    /* Arc reactor icon */
+    .arc-ring {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--arc);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      position: relative;
+      box-shadow: 0 0 20px var(--arc-g), inset 0 0 12px var(--arc-g);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .arc-ring::before {
+      content: '';
+      position: absolute;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--arc2);
+      animation: spin 3s linear infinite;
+      opacity: 0.7;
+    }
+    .arc-core {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--arc);
+      box-shadow: 0 0 16px var(--arc);
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 20px var(--arc-g), inset 0 0 12px var(--arc-g); }
+      50%      { box-shadow: 0 0 36px rgba(0,212,255,0.3), inset 0 0 20px rgba(0,212,255,0.15); }
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        if (session) {
-          window.location.href = "index.html";
-        }
-      }
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(1rem, 4vw, 1.4rem);
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, var(--arc) 0%, #fff 50%, var(--arc2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
 
-      checkUser();
-    </script>
-  </body>
+    .subtitle {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      color: var(--txt2);
+      margin-bottom: 8px;
+      animation: blink 4s step-start infinite;
+    }
+    @keyframes blink {
+      0%,94%  { opacity: 1; }
+      95%,99% { opacity: 0; }
+      100%    { opacity: 1; }
+    }
+
+    .status-line {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: rgba(0,212,255,0.02);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px 22px;
+      background: transparent;
+      border: 1px solid var(--arc);
+      border-radius: 4px;
+      color: var(--arc);
+      font-family: 'Orbitron', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(0,212,255,0.1));
+      opacity: 0;
+      transition: 0.22s;
+    }
+    .login-btn:hover {
+      box-shadow: 0 0 22px var(--arc-g);
+      color: #fff;
+    }
+    .login-btn:hover::before { opacity: 1; }
+    .login-btn:active { transform: scale(0.97); }
+
+    .footer-text {
+      margin-top: 20px;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-card">
+
+    <div class="arc-ring"><div class="arc-core"></div></div>
+
+    <h1>ACCESS CONTROL</h1>
+    <div class="subtitle">J.A.R.V.I.S. SECURITY PROTOCOL</div>
+    <p class="status-line">Biometric verification required. Authenticate to proceed.</p>
+
+    <button class="login-btn" onclick="login()">
+      🔐 &nbsp; AUTHENTICATE VIA GOOGLE
+    </button>
+
+    <p class="footer-text">STARK INDUSTRIES — CLEARANCE REQUIRED</p>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://blydoffpyipdehzghmvo.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN"; // ⚠️ paste your key here
+
+    const { createClient } = window.supabase;
+    const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function login() {
+      await client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + "/index.html",
+        },
+      });
+    }
+
+    async function checkUser() {
+      const { data: { session } } = await client.auth.getSession();
+      if (session) window.location.href = "index.html";
+    }
+
+    checkUser();
+  </script>
+</body>
 </html>

@@ -1,73 +1,60 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Manager Pro — J.A.R.V.I.S.</title>
-    <link rel="stylesheet" href="style.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager Pro — J.A.R.V.I.S.</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
+<body>
+  <div class="container">
 
-  <body>
-    <div class="container">
-      <h1>🚀 TASK MANAGER PRO</h1>
+    <!-- HEADER -->
+    <h1>⚡ TASK MANAGER PRO</h1>
 
-      <!-- User Bar -->
-      <div class="user-bar">
-        <img id="userAvatar" alt="User Avatar" />
-        <span id="userName"></span>
-        <button onclick="logout()" class="logout-btn">LOGOUT</button>
+    <!-- USER BAR -->
+    <div class="user-bar">
+      <img id="userAvatar" alt="User Avatar" />
+      <span id="userName">IDENTIFYING...</span>
+      <button onclick="logout()" class="logout-btn">LOGOUT</button>
+    </div>
+
+    <!-- TASK FORM -->
+    <div class="section-label">MISSION INPUT</div>
+    <div class="task-form">
+      <input type="text" id="taskInput" placeholder="Enter directive..." />
+      <input type="datetime-local" id="dueDate" />
+      <button onclick="addTask()">DEPLOY</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <button onclick="loadTasks()">ALL TASKS</button>
+      <button onclick="filterTasks(false)">PENDING</button>
+      <button onclick="filterTasks(true)">COMPLETE</button>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="divider-hud"><span>ACTIVE DIRECTIVES</span></div>
+
+    <!-- TASK LIST -->
+    <ul id="taskList"></ul>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>MISSION COMPLETION</span>
+        <strong id="progressPercent">0%</strong>
       </div>
-
-      <!-- Section Label -->
-      <div class="section-label">MISSION INPUT</div>
-
-      <!-- Task Form -->
-      <div class="task-form">
-        <input type="text" id="taskInput" placeholder="Enter directive..." />
-        <input type="datetime-local" id="dueDate" />
-        <button onclick="addTask()">DEPLOY</button>
-      </div>
-
-      <!-- Filters -->
-      <div class="filters">
-        <button onclick="loadTasks()">ALL TASKS</button>
-        <button onclick="filterTasks(false)">PENDING</button>
-        <button onclick="filterTasks(true)">COMPLETE</button>
-      </div>
-
-      <!-- HUD Divider -->
-      <div class="divider-hud"><span>ACTIVE DIRECTIVES</span></div>
-
-      <!-- Task List -->
-      <ul id="taskList"></ul>
-
-      <!-- Progress Bar -->
-      <div class="progress-wrap">
-        <div class="progress-label">
-          <span>MISSION COMPLETION</span>
-          <strong id="progressPercent">0%</strong>
-        </div>
-        <div class="progress-track">
-          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-        </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar" style="width:0%"></div>
       </div>
     </div>
 
-    <script src="script.js" defer></script>
+  </div>
 
-    <!-- Progress bar updater — call updateProgress() after any task change -->
-    <script>
-      function updateProgress() {
-        const items = document.querySelectorAll('#taskList li');
-        const done  = document.querySelectorAll('#taskList li .completed');
-        if (!items.length) return;
-        const pct = Math.round((done.length / items.length) * 100);
-        document.getElementById('progressBar').style.width = pct + '%';
-        document.getElementById('progressPercent').textContent = pct + '%';
-      }
-    </script>
-  </body>
+  <script src="script.js" defer></script>
+</body>
 </html>

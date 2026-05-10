@@ -1,80 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Task Manager Pro</title>
-
-  <!-- CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager Pro — J.A.R.V.I.S.</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
-
   <div class="container">
 
     <!-- HEADER -->
     <div class="header">
-
       <div class="logo-area">
-        <h1>🚀 Task Manager Pro</h1>
+        <h1>⚡ TASK MANAGER PRO</h1>
       </div>
-
-      <div class="user-area">
-        <img
-          id="userAvatar"
-          src="https://via.placeholder.com/40"
-          alt="User Avatar"
-          class="avatar"
-        />
-
-        <span id="userName">Loading...</span>
-
-        <button class="logout-btn" onclick="logout()">
-          Logout
-        </button>
+      <div class="user-area user-bar">
+        <img id="userAvatar" src="https://via.placeholder.com/40" alt="User Avatar" class="avatar" />
+        <span id="userName">IDENTIFYING...</span>
+        <button class="logout-btn" onclick="logout()">LOGOUT</button>
       </div>
-
     </div>
 
-    <!-- TASK INPUT -->
+    <!-- TASK FORM -->
+    <div class="section-label">MISSION INPUT</div>
     <div class="task-form">
-      <input
-        type="text"
-        id="taskInput"
-        placeholder="Enter task..."
-      /> <br>
-
-      <button onclick="addTask()">
-        Add
-      </button>
+      <input type="text" id="taskInput" placeholder="Enter directive..." />
+      <input type="datetime-local" id="dueDate" />
+      <button onclick="addTask()">DEPLOY</button>
     </div>
 
     <!-- FILTERS -->
     <div class="filters">
-      <button onclick="loadTasks()">
-        All
-      </button>
-
-      <button onclick="filterTasks(false)">
-        Pending
-      </button>
-
-      <button onclick="filterTasks(true)">
-        Completed
-      </button>
+      <button onclick="loadTasks()">ALL TASKS</button>
+      <button onclick="filterTasks(false)">PENDING</button>
+      <button onclick="filterTasks(true)">COMPLETE</button>
     </div>
+
+    <!-- DIVIDER -->
+    <div class="divider-hud"><span>ACTIVE DIRECTIVES</span></div>
 
     <!-- TASK LIST -->
     <ul id="taskList"></ul>
 
+    <!-- PROGRESS BAR -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>MISSION COMPLETION</span>
+        <strong id="progressPercent">0%</strong>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- MAIN SCRIPT -->
   <script src="script.js"></script>
-
 </body>
 </html>

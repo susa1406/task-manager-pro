@@ -1,4 +1,3 @@
-// 🔥 SUPABASE CONFIG (FINAL)
 const SUPABASE_URL = "https://blydoffpyipdehzghmvo.supabase.co";
 const SUPABASE_KEY = "sb_publishable_F96_tbCWplxJQL7T7gAG9A_QhXP96jN";
 

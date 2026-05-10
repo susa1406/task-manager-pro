@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Task Manager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager Pro — J.A.R.V.I.S.</title>
     <link rel="stylesheet" href="style.css" />
 
     <!-- Supabase -->
@@ -11,30 +12,62 @@
 
   <body>
     <div class="container">
-      <h1>🚀 Task Manager Pro</h1>
+      <h1>🚀 TASK MANAGER PRO</h1>
 
+      <!-- User Bar -->
       <div class="user-bar">
-        <img id="userAvatar" />
+        <img id="userAvatar" alt="User Avatar" />
         <span id="userName"></span>
-        <button onclick="logout()" class="logout-btn">Logout</button>
+        <button onclick="logout()" class="logout-btn">LOGOUT</button>
       </div>
 
+      <!-- Section Label -->
+      <div class="section-label">MISSION INPUT</div>
+
+      <!-- Task Form -->
       <div class="task-form">
-        <input type="text" id="taskInput" placeholder="Enter task..." /><br>
+        <input type="text" id="taskInput" placeholder="Enter directive..." />
         <input type="datetime-local" id="dueDate" />
-
-        <button onclick="addTask()">Add</button>
+        <button onclick="addTask()">DEPLOY</button>
       </div>
 
+      <!-- Filters -->
       <div class="filters">
-        <button onclick="loadTasks()">All</button>
-        <button onclick="filterTasks(false)">Pending</button>
-        <button onclick="filterTasks(true)">Completed</button>
+        <button onclick="loadTasks()">ALL TASKS</button>
+        <button onclick="filterTasks(false)">PENDING</button>
+        <button onclick="filterTasks(true)">COMPLETE</button>
       </div>
 
+      <!-- HUD Divider -->
+      <div class="divider-hud"><span>ACTIVE DIRECTIVES</span></div>
+
+      <!-- Task List -->
       <ul id="taskList"></ul>
+
+      <!-- Progress Bar -->
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>MISSION COMPLETION</span>
+          <strong id="progressPercent">0%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+      </div>
     </div>
 
     <script src="script.js" defer></script>
+
+    <!-- Progress bar updater — call updateProgress() after any task change -->
+    <script>
+      function updateProgress() {
+        const items = document.querySelectorAll('#taskList li');
+        const done  = document.querySelectorAll('#taskList li .completed');
+        if (!items.length) return;
+        const pct = Math.round((done.length / items.length) * 100);
+        document.getElementById('progressBar').style.width = pct + '%';
+        document.getElementById('progressPercent').textContent = pct + '%';
+      }
+    </script>
   </body>
 </html>

@@ -8,10 +8,16 @@ body {
 }
 
 .container {
-  width: 800px;
+  /* width: 800px; */
   background: #1e293b;
-  padding: 20px;
+  /* padding: 20px; */
   border-radius: 10px;
+
+
+   width: 100%;          /* Expands to full screen width on small devices */
+  max-width: 1200px;    /* Limits width on larger screens */
+  margin: 0 auto;       /* Centers the container horizontally */
+  padding: 20px;  
 }
 
 h1 {
